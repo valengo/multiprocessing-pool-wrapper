@@ -5,7 +5,7 @@ from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
-name = 'mphandler'
+name = 'mppwrapper'
 
 # get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -23,7 +23,7 @@ setup(
     long_description=long_description,
 
     # the project's main homepage.
-    url='https://github.com/valengo/multiprocessing-wrapper',
+    url='https://github.com/valengo/multiprocessing-pool-wrapper',
 
     # author details
     author='IP4 Team',
