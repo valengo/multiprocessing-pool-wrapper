@@ -7,9 +7,8 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 name = 'mppwrapper'
 
-# get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+long_description = "A simple wrapper for Python's multiprocessing module. Currently, it works by employing the Pool " \
+                   "object. "
 
 setup(
     name=name,

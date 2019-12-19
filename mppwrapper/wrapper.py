@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+@author: valengo
+"""
+
 from multiprocessing import Pool
 from multiprocessing import freeze_support
 from multiprocessing import cpu_count
