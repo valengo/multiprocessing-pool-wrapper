@@ -8,6 +8,7 @@
 from multiprocessing import Pool
 from multiprocessing import freeze_support
 from multiprocessing import cpu_count
+from typing import Callable, Any
 
 
 class MPPoolWrapper(object):
@@ -20,36 +21,44 @@ class MPPoolWrapper(object):
 
     """
 
-    def __init__(self, tasks: list, cores: int = None, chunksize: int = None):
+    def __init__(self, tasks: list, cores: int, chunksize: int):
         self.tasks = tasks
-        self._cores = self.cores = cores
-        self._chunksize = self.chunksize = chunksize
+        self._cores = cores
+        self._chunksize = chunksize
         self.pool = None
+
+    @classmethod
+    def create_tasks(cls, task: Callable, data: [Any], n_cores=None):
+        chunks = MPPoolWrapper.create_chunks(data, n_cores=n_cores)
+        tasks = [(task, chunk) for chunk in chunks]
+        return MPPoolWrapper(tasks, n_cores, len(chunks[0]))
 
     @property
     def cores(self):
+        if self._cores is None:
+            return cpu_count()
         return self._cores
-
-    @cores.setter
-    def cores(self, value):
-        if value is None:
-            value = cpu_count()
-        self._cores = value
 
     @property
     def chunksize(self):
         return self._chunksize
 
-    @chunksize.setter
-    def chunksize(self, value):
-        if value is None:
-            value, extra = divmod(len(self.tasks), self.cores * 4)
-            if extra:
-                value += 1
-        if value >= len(self.tasks):
-            value = 1
+    @staticmethod
+    def compute_chunksize(data_len: int, n_cores=None) -> int:
+        if n_cores is None:
+            n_cores = cpu_count()
+        chunksize, extra = divmod(data_len, n_cores * 4)
+        if extra:
+            chunksize += 1
+        return chunksize
 
-        self._chunksize = value
+    @staticmethod
+    def create_chunks(data: [Any], n_cores=None) -> [Any]:
+        chunksize = MPPoolWrapper.compute_chunksize(len(data), n_cores=n_cores)
+        chunks = []
+        for i in range(0, len(data), chunksize):
+            chunks.append(data[i: i + chunksize])
+        return chunks
 
     def __getstate__(self):
         self_dict = self.__dict__.copy()
