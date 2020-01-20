@@ -80,6 +80,6 @@ class MPPoolWrapper(object):
         """
         freeze_support()
         self.pool = Pool(self.cores)
-        res = list(self.pool.imap(self._runstar, self.tasks))
+        results = list(self.pool.imap(self._runstar, self.tasks))
         self.pool.close()
-        return res
+        return [r for res in results for r in res]
