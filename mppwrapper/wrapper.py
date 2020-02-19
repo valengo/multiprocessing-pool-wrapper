@@ -28,9 +28,9 @@ class MPPoolWrapper(object):
         self.pool = None
 
     @classmethod
-    def create_tasks(cls, task: Callable, data: [Any], n_cores=None):
+    def create_tasks(cls, task: Callable, data: [Any], *args, n_cores=None):
         chunks = MPPoolWrapper.create_chunks(data, n_cores=n_cores)
-        tasks = [(task, chunk) for chunk in chunks]
+        tasks = [(task, chunk, *args) for chunk in chunks]
         return MPPoolWrapper(tasks, n_cores, len(chunks[0]))
 
     @property
